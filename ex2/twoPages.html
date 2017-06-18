@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script language="javascript">
+        function switchToSecond() {
+            var first = document.getElementById('firstDiv');
+            first.style.display = 'none';
+            var second = document.getElementById('secondDiv');
+            second.style.display = 'block';
+        }
+        function switchToFirst() {
+            var first = document.getElementById('firstDiv');
+            first.style.display = 'block';
+            var second = document.getElementById('secondDiv');
+            second.style.display = 'none';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <title>Two Pages HTML</title>
+</head>
+<body>
+<h1>DIV changer app</h1>
+<!-- By default, the first div will be displayed and not the second -->
+<div id="firstDiv" style="display: block">
+    <p>You're now in the first div</p>
+    <button type="button" onclick="switchToSecond()">second</button>
+</div>
+<div id="secondDiv" style="display: none">
+    <p>You changed to the second div</p>
+    <button type="button" onclick="switchToFirst()">First</button>
+</div>
+</body>
+</html>
