@@ -3,8 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome To My First Express App</title>
+    <link rel="stylesheet" href="/public/stylesheets/style.css">
 </head>
-<body>
-    <p>Yo Yo Yo</p>
+    <body>
+    <div class="login-page">
+
+    </div>
+    <div class="login-page" id="loginPage">
+        <div class="form">
+            <input type="text" id="username" placeholder="username"/>
+            <input type="password" id="password" placeholder="password"/>
+            <button id="registerBtn">Register</button>
+            <button id="loginBtn">Login</button>
+            <p class="message">Failed to login in? Don't forget to register first!</p>
+        </div>
+    </div>
+    <div id="contentPage" style="display:none">
+        <div class="form">
+            <button id="logoutBtn">Logout</button>
+            <h2 id="connectedWelcome">You're connected as </h2><p id="userName"></p>
+            <p>These items were already added:</p>
+            <div id="items"></div>
+
+
+            new item:<input id="newItem"/>
+            <button id="postBtn">Post</button>
+            <button id="removeBtn">Remove</button>
+        </div>
+    </div>
+    <script src="/public/javascripts/script.js"></script>
 </body>
 </html>

@@ -10,6 +10,13 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+function renewCookie(req, res) {
+    var userCookie = req.cookies.uid;
+    if (userCookie) {
+        res.cookie('uid', userCookie.value, {maxAge: 3600000}); // Expires after 60 minutes
+    }
+}
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -29,63 +36,76 @@ var uidCounter = 0;
 var userList = {};
 var itemList = {};
 
+
 // should add user/password to the user-list
 app.post('/register/:username/:password', function(req, res, next){
     var username = req.params.username;
     var password = req.params.password;
     if (username in userList){
-        console.log("Error: User already exists");
+        console.log("main.js: register: User already exists");
         res.sendStatus(500);
     } else {
         uid = uidCounter;
         uidCounter++;
         userList[username] = {"uid": uid, "password": password};
-        console.log("Success: Created user " + username + " uid: " + uid);
+        console.log("main.js: register: Created user " + username + " uid: " + uid);
         res.sendStatus(200);
     }
 
 });
 
-// should log in
+// should log ins
 app.post('/login/:username/:password', function(req, res, next){
     var username = req.params.username;
     var password = req.params.password;
     if (username in userList){
-        console.log("Success: Logged in with user " + username);
+        console.log("main.js: login: Logged in with user " + username);
         if (userList[username]['password'] === password) {
             res.cookie('uid', userList[username]['uid'], {maxAge: 3600000}); // Expires after 60 minutes
             res.sendStatus(200);
         } else {
-            console.log("Error: password doesn't match user " + username);
+            console.log("main.js: login: password doesn't match user " + username);
             res.sendStatus(403);
         }
     } else {
-        console.log("Error: user " + username + " doesn't exist");
+        console.log("main.js: login: user " + username + " doesn't exist");
         res.sendStatus(500);
     }
 });
 
+
 // Validate only logged in users access the next routes
 app.use('/',function(req,res,next){
-    console.log(req.cookies.uid);
-    next()
-    // if(logedInUsersTag[req.cookies.uid]) {
-    //     next();
-    // }else{
-    //     res.json("You are unauthorized. Please login.");
-    // }
+    if(req.cookies.uid) {
+        next();
+    }else{
+        res.json("You are unauthorized. Please login.");
+    }
+});
+
+// logout - basically delete login cookie
+app.post('/logout', function(req, res, next){
+    var userCookie = req.cookies.uid;
+    if (userCookie){
+        res.clearCookie('uid');
+        console.log("main.js: logout: Logged out successfully");
+        res.sendStatus(200);
+    } else {
+        console.log("main.js: logout: No cookie found, user is already logged out");
+        res.sendStatus(500);
+    }
 });
 
 // Should add the json item to the items-list
 app.post('/item/', function(req, res, next){
-    console.log("Adding item to the item list");
+    renewCookie(req, res);
     itemList[parseInt(req.body.id)] = req.body.data;
-    console.log(itemList);
     res.sendStatus(200);
 });
 
 // returns all the items as an array
 app.get('/items', function(req, res, next){
+    renewCookie(req, res);
     res.json(Object.keys(itemList).map(function(itemID){
         return {"id": itemID, "data": itemList[itemID]};
     }));
@@ -93,6 +113,7 @@ app.get('/items', function(req, res, next){
 
 // returns the item with the right id or 404 if no such an item
 app.get('/item/:id', function(req, res, next){
+    renewCookie(req, res);
     var itemID = parseInt(req.param.id);
     if (itemID in itemList){
         res.json({"id": itemID, "data": itemList[itemID]})
@@ -103,6 +124,8 @@ app.get('/item/:id', function(req, res, next){
 
 // delete the item with the right id or 404 if no such an item
 app.delete('/item/:id', function(req, res, next){
+    renewCookie();
+    console.log("req.params: " + req.params);
     var itemID = parseInt(req.param.id);
     if (itemID in itemList){
         delete itemList[itemID]
@@ -113,6 +136,7 @@ app.delete('/item/:id', function(req, res, next){
 
 // (item from type json in the HTTP body) overwrite the properties values of the item with the same id or 404 if no such an item
 app.put('/item/', function(req, res, next){
+    renewCookie(req, res);
     var itemID = parseInt(req.body.id);
     var newItemData = req.body.data;
     if (itemID in itemList){
