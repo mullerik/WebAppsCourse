@@ -77,6 +77,7 @@ app.post('/login/:username/:password', function(req, res, next){
 // Validate only logged in users access the next routes
 app.use('/',function(req,res,next){
     if(req.cookies.uid) {
+        renewCookie(req, res);
         next();
     }else{
         res.json("You are unauthorized. Please login.");
@@ -98,14 +99,13 @@ app.post('/logout', function(req, res, next){
 
 // Should add the json item to the items-list
 app.post('/item/', function(req, res, next){
-    renewCookie(req, res);
+    console.log("req.body: " + req.body);
     itemList[parseInt(req.body.id)] = req.body.data;
     res.sendStatus(200);
 });
 
 // returns all the items as an array
 app.get('/items', function(req, res, next){
-    renewCookie(req, res);
     res.json(Object.keys(itemList).map(function(itemID){
         return {"id": itemID, "data": itemList[itemID]};
     }));
@@ -113,8 +113,7 @@ app.get('/items', function(req, res, next){
 
 // returns the item with the right id or 404 if no such an item
 app.get('/item/:id', function(req, res, next){
-    renewCookie(req, res);
-    var itemID = parseInt(req.param.id);
+    var itemID = parseInt(req.params.id);
     if (itemID in itemList){
         res.json({"id": itemID, "data": itemList[itemID]})
     } else {
@@ -124,11 +123,10 @@ app.get('/item/:id', function(req, res, next){
 
 // delete the item with the right id or 404 if no such an item
 app.delete('/item/:id', function(req, res, next){
-    renewCookie();
-    console.log("req.params: " + req.params);
-    var itemID = parseInt(req.param.id);
+    var itemID = parseInt(req.params.id);
     if (itemID in itemList){
-        delete itemList[itemID]
+        delete itemList[itemID];
+        res.sendStatus(200);
     } else {
         res.sendStatus(404);
     }

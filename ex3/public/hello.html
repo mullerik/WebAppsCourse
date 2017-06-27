@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Welcome To My First Express App</title>
+    <title>Trip Planner 2.0</title>
     <link rel="stylesheet" href="/public/stylesheets/style.css">
 </head>
     <body>
@@ -13,22 +13,60 @@
         <div class="form">
             <input type="text" id="username" placeholder="username"/>
             <input type="password" id="password" placeholder="password"/>
-            <button id="registerBtn">Register</button>
-            <button id="loginBtn">Login</button>
-            <p class="message">Failed to login in? Don't forget to register first!</p>
+            <button class="btn" id="registerBtn">Register</button>
+            <button class="btn" id="loginBtn">Login</button>
+            <p id="failedMessage" class="message">Failed to login in? Don't forget to register first!</p>
+            <p id="warningMessage403" class="message" style="color: red; display: none">Error 403: Credentials do not match</p>
+            <p id="warningMessage500" class="message" style="color: red; display: none">Error 500: User doesn't exist. Did you register?</p>
         </div>
     </div>
     <div id="contentPage" style="display:none">
         <div class="form">
-            <button id="logoutBtn">Logout</button>
-            <h2 id="connectedWelcome">You're connected as </h2><p id="userName"></p>
-            <p>These items were already added:</p>
-            <div id="items"></div>
+            <div>
+                <h2>TripPlanner2.0</h2>
+                <span class="appDescription">
+                    Hi!<br />
+                    We're here to make your life much much easier.<br />
+                    TripPlanner2.0 was designed to deliver organizing experience to the MAX!<br />
+                    By using our predefined tasks list, you won't forget a thing ever again.<br />
+                    Finished a task? <br />
+                    Add it to your DONE section and you'll be able to see it on your next visit.<br />
+                    Decided to redo it? <br />
+                    No problem! simply remove it and add it again once finished.<br />
+                    We're here to help you with our new beta version.<br />
+                    Got into troubles? contact us in support@tripplanner.io<br /><br />
+                </span>
+                <hr/>
+            </div>
 
+            <div class="addItemDiv">
+                <button class="btn btnAdd" id="postBtn">ADD</button>
+                <input class="itemID" id="itemInput" type="text" placeholder="TASK ID"/>
+                <button class="btn btnRemove" id="removeBtn">REMOVE</button>
+            </div>
 
-            new item:<input id="newItem"/>
-            <button id="postBtn">Post</button>
-            <button id="removeBtn">Remove</button>
+            <div class="usersItems">
+                <h3>DONE</h3>
+                <table id="doneTasksTable">
+                    <tr>
+                        <th>TASK ID</th>
+                        <th>Description</th>
+                    </tr>
+                </table>
+            </div>
+
+            <div>
+                <h3>TODO</h3>
+                <table id="allTasksTable">
+                    <tr>
+                        <th>TASK ID</th>
+                        <th>Description</th>
+                    </tr>
+                </table>
+            </div>
+            <hr/>
+            <p id="connectedWelcome">You're connected as user</p>
+            <button class="btn" id="logoutBtn">Logout</button>
         </div>
     </div>
     <script src="/public/javascripts/script.js"></script>
