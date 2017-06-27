@@ -84,7 +84,6 @@ function loginAjax() {
                 var newText = oldText.replace("user", user.value);
                 document.getElementById("connectedWelcome").innerText = newText;
                 refreshItemList();
-                allAvailableItems();
             } else if (this.status == 403 || this.status == 500) {
                 displayErrorMessage(this.status)
             }
@@ -124,16 +123,31 @@ function refreshItemList(){
                 cell1.innerText = curItemID;
                 cell2.innerText = curItem;
             }
+            allAvailableItems(respObj)
         }
     };
     xhttp.open("GET", "/items", true);
     xhttp.send();
 }
 
-function allAvailableItems(){
+function arrayToObject(arr){
+    var tempObj = {};
+    for(var i in arr){
+        tempObj[arr[i]["id"]] = arr[i]["data"];
+    }
+    return tempObj;
+}
+
+function allAvailableItems(userTasks){
+    userTasks = arrayToObject(userTasks);
     var table = document.getElementById("allTasksTable");
     resetTable("allTasksTable");
     Object.keys(allItems).forEach(function(key, index){
+        // Don't show tasks user already finished
+        if (key in userTasks)
+            return;
+
+        // Otherwise - add them to list
         var curItem = allItems[key];
         var row = table.insertRow();
         var cell1 = row.insertCell(0);
