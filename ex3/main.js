@@ -99,7 +99,6 @@ app.post('/logout', function(req, res, next){
 
 // Should add the json item to the items-list
 app.post('/item/', function(req, res, next){
-    console.log("req.body: " + req.body);
     itemList[parseInt(req.body.id)] = req.body.data;
     res.sendStatus(200);
 });
