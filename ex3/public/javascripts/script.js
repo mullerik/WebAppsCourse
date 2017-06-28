@@ -9,7 +9,8 @@ postItem.addEventListener('click', addItem);
 var deleteItem = document.getElementById("removeBtn");
 deleteItem.addEventListener('click', removeItem);
 
-var allItems = {
+// List of all items
+var allTasks = {
     1: "CHECK YOUR PASSPORT AND APPLY FOR ANY NECESSARY VISAS",
     2: "GET VACCINATED AND STOCK UP ON MEDICINE",
     3: "CHECK FOR TRAVEL WARNINGS/ADVISORIES AND REGISTER YOUR TRIP.",
@@ -21,6 +22,8 @@ var allItems = {
     9: "RESEARCH ENTRANCE AND EXIT FEES",
     10: "BUY HEALTH AND TRAVEL INSURANCE"
 };
+
+// Decide which error to display according the status code
 function displayErrorMessage(status){
     // Clear error messages
     document.getElementById("warningMessage403").style.display = "none";
@@ -32,6 +35,7 @@ function displayErrorMessage(status){
     }
 }
 
+// get table id and delete all inner content
 function resetTable(tableID){
     var table = document.getElementById(tableID);
     table.innerHTML = "";
@@ -41,7 +45,7 @@ function resetTable(tableID){
     var headerCell2 = row.insertCell(1);
     headerCell2.outerHTML = "<th>Description</th>";
 }
-
+// decide which page to display
 function togglePages() {
     if (document.getElementById("loginPage").style.display === "none") {
         document.getElementById("loginPage").style.display = "inline";
@@ -54,6 +58,7 @@ function togglePages() {
     }
 }
 
+// Send register request to the server
 function registerAjax() {
     var user = document.getElementById("username");
     var password = document.getElementById("password");
@@ -67,6 +72,7 @@ function registerAjax() {
     xhttp.send();
 }
 
+// Send login request to the server
 function loginAjax() {
     var user = document.getElementById("username");
     var password = document.getElementById("password");
@@ -126,6 +132,7 @@ function refreshItemList(){
     xhttp.send();
 }
 
+// Convert array of tasks to object by IDs
 function arrayToObject(arr){
     var tempObj = {};
     for(var i in arr){
@@ -138,13 +145,13 @@ function allAvailableItems(userTasks){
     userTasks = arrayToObject(userTasks);
     var table = document.getElementById("allTasksTable");
     resetTable("allTasksTable");
-    Object.keys(allItems).forEach(function(key, index){
+    Object.keys(allTasks).forEach(function(key, index){
         // Don't show tasks user already finished
         if (key in userTasks)
             return;
 
         // Otherwise - add them to list
-        var curItem = allItems[key];
+        var curItem = allTasks[key];
         var row = table.insertRow();
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
@@ -155,7 +162,7 @@ function allAvailableItems(userTasks){
 
 function addItem() {
     var itemID = document.getElementById("itemInput");
-    if (!(itemID.value in allItems)) {
+    if (!(itemID.value in allTasks)) {
         console.log("Error: item id is not in all items");
         return;
     }
@@ -167,7 +174,7 @@ function addItem() {
     };
     xhttp.open("POST", "/item/", true);
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("id=" + itemID.value + "&data=" + allItems[itemID.value]);
+    xhttp.send("id=" + itemID.value + "&data=" + allTasks[itemID.value]);
 }
 
 function removeItem() {
