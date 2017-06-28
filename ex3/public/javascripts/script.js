@@ -21,10 +21,6 @@ var allItems = {
     9: "RESEARCH ENTRANCE AND EXIT FEES",
     10: "BUY HEALTH AND TRAVEL INSURANCE"
 };
-
-function insertAfter(el, referenceNode) {
-    referenceNode.parentNode.insertBefore(el, referenceNode.nextSibling);
-}
 function displayErrorMessage(status){
     // Clear error messages
     document.getElementById("warningMessage403").style.display = "none";
