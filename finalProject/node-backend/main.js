@@ -10,10 +10,12 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+const COOKIE_LIFETIME = 3600000;
+
 function renewCookie(req, res) {
     var userCookie = req.cookies.uid;
     if (userCookie) {
-        res.cookie('uid', userCookie.value, {maxAge: 3600000}); // Expires after 60 minutes
+        res.cookie('uid', userCookie.value, {maxAge: COOKIE_LIFETIME}); // Expires after 60 minutes
     }
 }
 
@@ -42,7 +44,7 @@ app.post('/register/:username/:password', function(req, res, next){
     var username = req.params.username;
     var password = req.params.password;
     if (username in userList){
-        console.log("main.js: register: User already exists");
+        console.log("main.js: register: User " + username + " already exists");
         res.sendStatus(500);
     } else {
         uid = uidCounter;
@@ -61,7 +63,7 @@ app.post('/login/:username/:password', function(req, res, next){
     if (username in userList){
         console.log("main.js: login: Logged in with user " + username);
         if (userList[username]['password'] === password) {
-            res.cookie('uid', userList[username]['uid'], {maxAge: 3600000}); // Expires after 60 minutes
+            res.cookie('uid', userList[username]['uid'], {maxAge: COOKIE_LIFETIME}); // Expires after 60 minutes
             res.sendStatus(200);
         } else {
             console.log("main.js: login: password doesn't match user " + username);
