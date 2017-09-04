@@ -174,7 +174,6 @@ app.get('/getExercises/', function(req, res, next){
 // Should add the json item to the items-list
 app.post('/addExercise/', function(req, res, next){
     var workout_id = req.body.workout_id;
-    console.log("workoutList ", workoutList);
     var workout = workoutList.find(workout => workout.id == workout_id);
     if (workout) {
         workout.exercises[exerciseIDCounter] = {
@@ -185,7 +184,6 @@ app.post('/addExercise/', function(req, res, next){
             weight: req.body.weight
         };
         exerciseIDCounter++;
-        console.log("workoutList ", workoutList);
         res.sendStatus(200);
     }
     else

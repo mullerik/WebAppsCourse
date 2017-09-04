@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import logo from './logo.png'
 import ApiUtils from './ApiUtils'
 import CreateWorkoutModal from './CreateWorkoutModal'
 import WorkoutHistory from './WorkoutHistory'
@@ -93,9 +94,9 @@ class HomeScreen extends Component {
             return (
                 <div style={HomeStyle}>
                     <PageHeader>
-                        <div style={TitleStyle}>FiTotal</div>
-                        <small>Your personal training App</small><br/>
                     </PageHeader>
+                    <img src={logo} className="App-logo" alt="logo" /><br/>
+                    <small className="Subtitle">Your personal training App</small><br/>
                     <div>
                         <h4>Welcome {this.props.user}</h4>
                         <h5>Start your FiTotal experience by creating a new workout</h5>
@@ -120,7 +121,7 @@ class HomeScreen extends Component {
                     </PanelGroup>
                     <Button bsStyle="link" onClick={this.logout.bind(this)}>Logout</Button><br/>
                     <Button bsStyle="link" onClick={this.delete.bind(this)}>Delete Account</Button><br/>
-                    <Label bsStyle="warning">Caution: This cannot be undone!</Label>
+                    <Label>Caution: This cannot be undone!</Label>
                 </div>
             );
         }

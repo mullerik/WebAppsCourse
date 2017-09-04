@@ -1,9 +1,6 @@
-/**
- * Created by arik_ on 9/4/2017.
- */
 import React, { Component } from 'react';
 import ApiUtils from './ApiUtils'
-import { Button, Glyphicon, Panel, Badge, FormGroup, FormControl, ListGroup, ListGroupItem} from 'react-bootstrap';
+import { Button, Glyphicon, Panel, Badge, FormGroup, FormControl, ListGroup, ListGroupItem, InputGroup} from 'react-bootstrap';
 import ShareModal from "./ShareModal";
 import ExerciseModal from "./ExerciseModal";
 
@@ -11,7 +8,8 @@ class WorkoutHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filterTitle: ''
+            filterTitle: '',
+            filterMonth: false
         };
     }
 
@@ -42,7 +40,10 @@ class WorkoutHistory extends Component {
         if (!this.state.filterTitle)
             return this.props.workouts;
 
-        return this.props.workouts.filter(workout => workout.title.toLowerCase().includes(this.state.filterTitle.toLowerCase()))
+        return this.props.workouts.filter(workout => {
+            return (workout.title.toLowerCase().includes(this.state.filterTitle.toLowerCase()) ||
+                    workout.date.toLowerCase().includes(this.state.filterTitle.toLowerCase()))
+        })
     }
 
     render(){
@@ -73,7 +74,7 @@ class WorkoutHistory extends Component {
                     <p style={PanelStyle}>Last Workouts - <Badge>{this.props.workouts.length}</Badge></p>
                     <FormGroup>
                         <FormControl type="text"
-                                     placeholder="Filter by title"
+                                     placeholder="Filter by Title/Date"
                                      name="filterTitle"
                                      value={this.state.filterTitle}
                                      onChange={this.handleInputChange.bind(this)}/>

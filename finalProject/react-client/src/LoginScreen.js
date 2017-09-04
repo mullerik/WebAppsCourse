@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, Label, ButtonGroup } from 'react-bootstrap';
+import logo from './logo.png'
 import ApiUtils from './ApiUtils'
 
 class LoginScreen extends Component {
@@ -74,7 +75,7 @@ class LoginScreen extends Component {
         return (
             <div style={LoginStyle}>
                 <div style={credentialsStyle}>
-                    <h2>FiTotal</h2>
+                    <img src={logo} className="App-logo" alt="logo" /><br/>
                     <span>Please provide your credentials</span>
                     <FormGroup style={formStyle}>
                         <FormControl type="text"
