@@ -6,19 +6,41 @@ import HomeScreen from './HomeScreen';
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {show:'LoginScreen'};
+        this.state = {
+            show:'LoginScreen',
+            loggedUser: ''
+        };
 
+    }
+    setUser(user) {
+        this.setState({loggedUser:user});
     }
     changeScreen(newScreen){
         this.setState({show:newScreen});
     }
     render() {
-        return (
-            <div className="App">
-                <LoginScreen show={this.state.show} change={this.changeScreen.bind(this)}/>
-                <HomeScreen show={this.state.show} change={this.changeScreen.bind(this)}/>
-            </div>
-        );
+        if (this.state.loggedUser){
+            return (
+                <div className="App">
+                    <LoginScreen show={this.state.show}
+                                 setUser={this.setUser.bind(this)}
+                                 change={this.changeScreen.bind(this)}/>
+                    <HomeScreen show={this.state.show}
+                                user={this.state.loggedUser}
+                                setUser={this.setUser.bind(this)}
+                                change={this.changeScreen.bind(this)}/>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div className="App">
+                    <LoginScreen show={this.state.show}
+                                 setUser={this.setUser.bind(this)}
+                                 change={this.changeScreen.bind(this)}/>
+                </div>
+            );
+        }
     }
 }
 

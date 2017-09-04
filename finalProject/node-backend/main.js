@@ -19,6 +19,13 @@ function renewCookie(req, res) {
     }
 }
 
+function isUserExists(user) {
+    if (user in userList)
+        return true;
+    console.log("Couldn't find user ", user);
+    return false
+}
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -34,10 +41,17 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 // app.use('/', index);
 // app.use('/users', users);
 
-var uidCounter = 0;
+var uidCounter = 1;
+var workoutIDCounter = 0;
+var exerciseIDCounter = 0;
 var userList = {};
-var itemList = {};
+var workoutList = [];
 
+// Add admin user
+userList.admin = {
+    password: 'admin',
+    uid: 0
+};
 
 // should add user/password to the user-list
 app.post('/register/:username/:password', function(req, res, next){
@@ -87,11 +101,11 @@ app.use('/',function(req,res,next){
 });
 
 // logout - basically delete login cookie
-app.post('/logout', function(req, res, next){
+app.post('/logout/', function(req, res, next){
     var userCookie = req.cookies.uid;
     if (userCookie){
-        res.clearCookie('uid');
         console.log("main.js: logout: Logged out successfully");
+        res.clearCookie('uid');
         res.sendStatus(200);
     } else {
         console.log("main.js: logout: No cookie found, user is already logged out");
@@ -99,49 +113,170 @@ app.post('/logout', function(req, res, next){
     }
 });
 
+// logout - basically delete login cookie
+app.delete('/deleteAccount/:user', function(req, res, next){
+    let uid = req.cookies.uid;
+    let user = req.params.user;
+    if (uid){
+        delete userList[user];
+        let userWorkouts = workoutList.filter(workout => workout.user == user);
+        for(i = 0; i < userWorkouts.length; i++){
+            workout = userWorkouts[i];
+            index = workoutList.indexOf(workout);
+            if (index > -1) {
+                workoutList.splice(index, 1);
+            }
+        }
+        res.clearCookie('uid');
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(500);
+    }
+});
+
+const POSSIBLE_EXERCISES = {
+    0: "Barbell Bench Press",
+    1: "Machine Fly",
+    2: "Flat Bench Dumbbell Press",
+    3: "Dips For Chest",
+    4: "Barbell Deadlift",
+    5: "Bent-Over Barbell Deadlift",
+    6: "Wide-Grip Pull-Up",
+    7: "Standing T-Bar Row",
+    8: "Dumbbell Shoulder Press",
+    9: "Upright Barbell Row",
+    10: "Side Lateral Raise",
+    11: "Incline Hammer Curls",
+    12: "Standing Concentration Curl",
+    13: "EZ Bar Curl",
+    14: "Close-Grip Bench Press",
+    15: "Dumbbell Overhead Triceps Press",
+    16: "Lying Triceps Extension",
+    17: "Ab wheel rollout",
+    18: "Barbell russian twist",
+    19: "Swiss ball crunch",
+    20: "Squat",
+    21: "Bulgarian Split Squat",
+    22: "Dumbbell Lunge",
+    23: "Leg Press",
+    24: "Jumping Jacks",
+    25: "Cycling",
+    26: "Running"
+};
+
+
+app.get('/getExercises/', function(req, res, next){
+    console.log("main.js: createWorkout: getting all possible exercises");
+    res.json(POSSIBLE_EXERCISES);
+});
+
+
 // Should add the json item to the items-list
-app.post('/item/', function(req, res, next){
-    itemList[parseInt(req.body.id)] = req.body.data;
+app.post('/addExercise/', function(req, res, next){
+    var workout_id = req.body.workout_id;
+    console.log("workoutList ", workoutList);
+    var workout = workoutList.find(workout => workout.id == workout_id);
+    if (workout) {
+        workout.exercises[exerciseIDCounter] = {
+            ex_id: req.body.ex_id,
+            ex_name: POSSIBLE_EXERCISES[req.body.ex_id],
+            sets: req.body.sets,
+            reps: req.body.reps,
+            weight: req.body.weight
+        };
+        exerciseIDCounter++;
+        console.log("workoutList ", workoutList);
+        res.sendStatus(200);
+    }
+    else
+        res.sendStatus(404);
+});
+
+app.get('/getWorkouts/:user', function(req, res, next){
+    console.log("main.js: getWorkouts: getting all workouts");
+    user = req.params.user;
+    if (!isUserExists(user))
+        res.sendStatus(404);
+    else{
+        var workoutForUser = workoutList.filter(workout => workout.user == user);
+        res.json(workoutForUser);
+    }
+
+});
+
+app.get('/getSharedWorkouts/:user', function(req, res, next){
+    console.log("main.js: getSharedWorkouts: getting all workouts");
+    user = req.params.user;
+    if (!isUserExists(user))
+        res.sendStatus(404);
+    else
+        res.json(workoutList.filter(workout => workout.shared_with === user))
+
+});
+
+// Should add the json item to the items-list
+app.post('/createWorkout/', function(req, res, next){
+    workout = req.body;
+    workoutList.push({
+        id: workoutIDCounter,
+        user: workout.user,
+        title: workout.title,
+        date: workout.date,
+        goals: workout.goals,
+        exercises: {},
+        shared_with: ''
+    });
+    workoutIDCounter++;
     res.sendStatus(200);
 });
 
-// returns all the items as an array
-app.get('/items', function(req, res, next){
-    res.json(Object.keys(itemList).map(function(itemID){
-        return {"id": itemID, "data": itemList[itemID]};
-    }));
-});
-
-// returns the item with the right id or 404 if no such an item
-app.get('/item/:id', function(req, res, next){
-    var itemID = parseInt(req.params.id);
-    if (itemID in itemList){
-        res.json({"id": itemID, "data": itemList[itemID]})
-    } else {
-        res.sendStatus(404);
+// delete the item with the right id or 404 if no such an item
+app.delete('/deleteWorkout/:id', function(req, res, next){
+    var workoutID = parseInt(req.params.id);
+    console.log("workoutID ", workoutID);
+    var workout = workoutList.find(workout => workout.id == workoutID);
+    console.log("workout ", workout);
+    if (workout) {
+        index = workoutList.indexOf(workout);
+        if (index > -1) {
+            workoutList.splice(index, 1);
+        }
+        console.log("workoutList ", workoutList);
+        res.sendStatus(200);
     }
+    else
+        res.sendStatus(404);
 });
 
 // delete the item with the right id or 404 if no such an item
-app.delete('/item/:id', function(req, res, next){
-    var itemID = parseInt(req.params.id);
-    if (itemID in itemList){
-        delete itemList[itemID];
+app.delete('/deleteExercise/:workout_id/:ex_id', function(req, res, next){
+    var workout_id = parseInt(req.params.workout_id);
+    var ex_id = parseInt(req.params.ex_id);
+    var workout = workoutList.find(workout => workout.id == workout_id);
+    if (workout) {
+        delete workout.exercises[ex_id];
         res.sendStatus(200);
-    } else {
-        res.sendStatus(404);
     }
+    else
+        res.sendStatus(404);
 });
 
-// (item from type json in the HTTP body) overwrite the properties values of the item with the same id or 404 if no such an item
-app.put('/item/', function(req, res, next){
-    renewCookie(req, res);
-    var itemID = parseInt(req.body.id);
-    var newItemData = req.body.data;
-    if (itemID in itemList){
-        itemList[itemID] = newItemData;
-    } else {
+// Should add the json item to the items-list
+app.post('/shareWorkout/', function(req, res, next){
+    var workout_id = req.body.workout_id;
+    var userToShare = req.body.userToShare;
+    if (!isUserExists(userToShare))
         res.sendStatus(404);
+    else {
+        var workout = workoutList.find(workout => workout.id == workout_id);
+        if (workout) {
+            workout.shared_with = userToShare;
+            console.log("workoutList ", workoutList);
+            res.sendStatus(200);
+        }
+        else
+            res.sendStatus(403);
+
     }
 });
 
