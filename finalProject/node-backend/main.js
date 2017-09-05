@@ -4,18 +4,17 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var consts = require('./consts');
 
 // var index = require('./routes/index');
 // var users = require('./routes/users');
 
 var app = express();
 
-const COOKIE_LIFETIME = 3600000;
-
 function renewCookie(req, res) {
     var userCookie = req.cookies.uid;
     if (userCookie) {
-        res.cookie('uid', userCookie.value, {maxAge: COOKIE_LIFETIME}); // Expires after 60 minutes
+        res.cookie('uid', userCookie.value, {maxAge: consts.COOKIE_LIFETIME}); // Expires after 60 minutes
     }
 }
 
@@ -77,7 +76,7 @@ app.post('/login/:username/:password', function(req, res, next){
     if (username in userList){
         console.log("main.js: login: Logged in with user " + username);
         if (userList[username]['password'] === password) {
-            res.cookie('uid', userList[username]['uid'], {maxAge: COOKIE_LIFETIME}); // Expires after 60 minutes
+            res.cookie('uid', userList[username]['uid'], {maxAge: consts.COOKIE_LIFETIME}); // Expires after 60 minutes
             res.sendStatus(200);
         } else {
             console.log("main.js: login: password doesn't match user " + username);
@@ -134,40 +133,10 @@ app.delete('/deleteAccount/:user', function(req, res, next){
     }
 });
 
-const POSSIBLE_EXERCISES = {
-    0: "Barbell Bench Press",
-    1: "Machine Fly",
-    2: "Flat Bench Dumbbell Press",
-    3: "Dips For Chest",
-    4: "Barbell Deadlift",
-    5: "Bent-Over Barbell Deadlift",
-    6: "Wide-Grip Pull-Up",
-    7: "Standing T-Bar Row",
-    8: "Dumbbell Shoulder Press",
-    9: "Upright Barbell Row",
-    10: "Side Lateral Raise",
-    11: "Incline Hammer Curls",
-    12: "Standing Concentration Curl",
-    13: "EZ Bar Curl",
-    14: "Close-Grip Bench Press",
-    15: "Dumbbell Overhead Triceps Press",
-    16: "Lying Triceps Extension",
-    17: "Ab wheel rollout",
-    18: "Barbell russian twist",
-    19: "Swiss ball crunch",
-    20: "Squat",
-    21: "Bulgarian Split Squat",
-    22: "Dumbbell Lunge",
-    23: "Leg Press",
-    24: "Jumping Jacks",
-    25: "Cycling",
-    26: "Running"
-};
-
 
 app.get('/getExercises/', function(req, res, next){
     console.log("main.js: createWorkout: getting all possible exercises");
-    res.json(POSSIBLE_EXERCISES);
+    res.json(consts.POSSIBLE_EXERCISES);
 });
 
 
@@ -178,7 +147,7 @@ app.post('/addExercise/', function(req, res, next){
     if (workout) {
         workout.exercises[exerciseIDCounter] = {
             ex_id: req.body.ex_id,
-            ex_name: POSSIBLE_EXERCISES[req.body.ex_id],
+            ex_name: consts.POSSIBLE_EXERCISES[req.body.ex_id],
             sets: req.body.sets,
             reps: req.body.reps,
             weight: req.body.weight
