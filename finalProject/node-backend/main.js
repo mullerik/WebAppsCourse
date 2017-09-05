@@ -35,7 +35,10 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/public', express.static(path.join(__dirname, 'public')));
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, 'react-client/build')));
+//app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // app.use('/', index);
 // app.use('/users', users);
@@ -264,5 +267,9 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// Listen on a given port or 5000
+var port = process.env.PORT || 5000;
+app.listen(port);
 
 module.exports = app;
