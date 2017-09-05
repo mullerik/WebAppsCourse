@@ -1,43 +1,51 @@
 Readme - FiTotal App by Arie Muller
 
+URL: http://fitotal.herokuapp.com/
+
 The goal behind the UI
 - Design a clear login page with indicative warnings for bad input by the user (explained later on).
-- Provide a simple dynamic task list for people intending to go on a trip.
-  The recommended list is predefined and gives some guide lines and tips for the user.
-  Each task completed by the user can be transferred to the "DONE" section.
-  The remaining "TODO" tasks are dynamically updated according to the "DONE" tasks so no task will appear twice.
+- Provide a simple dynamic workout planner for people to track their workouts.
+  The exercise list is dynamically loaded from the server and later on can be moved to a DB.
+  The user creates a workout and can gradually add exercises to any of its workouts.
+  Any workout can be shared with a single user and allow him to see your workouts in his app.
   The logout button enables the user to remove the cookie and go back to the login page.
 
 How to use the UI?
-- Start by running "set DEBUG=ex3:* & npm start" inside ex3 directory
-- In chrome, go to http://localhost:3000/public/hello.html
+- Start by running "npm start" inside node-backend directory
+- In chrome, go to http://localhost:3000/ for local version and fitotal.herokuapp.com for online.
 - Enter username + password and register
-  Trying to login with non-existing user should show red warning "Error 500: User doesn't exist. Did you register?"
-  Trying to login with wrong password should show red warning "Error 403: Credentials do not match"
-- After login, content page will be loaded with a short description of the app and predefined tasks list
-- To add a task to the "DONE" section, simply enter the task ID to the input field and press "ADD"
-  If you decided you want to redo the task, enter the task ID and press remove.
-  This will return the task to the "TODO" section.
-- DONE tasks will stay that way even after a refresh or logout as long as the server is running.
+  Trying to login with non-existing user should show red warning "User doesn't exist. Please register first."
+  Trying to login with wrong password should show red warning "Bad credentials for admin. Please try again."
+  Trying to register with a registered user should show red warning "User already exist."
+- After login, content page will be loaded with a short description.
+- You can add an empty workout by pressing the '+' button.
+    Fill out all the necessary fields and press create.
+    I've added fields validation to assure no empty fields are being sent to the server.
+    The workout is associated with the logged user and owned by him. Only the creating user can add/remove exercises from the workout.
+    The "Your workouts" Panel should be updated right after a successful creation.
+- After creating the workout, you may add exercises in the "Your workouts" Panel.
+    Add an exercise by pressing the '+' under the workout panel.
+    Choose your exercise and decide the sets/reps/weight.
+    Click "Add" to finish.
+    You can remove the exercise later on by pressing "X" near the exercise.
+    The workout should be updated instantly.
+- You can show only some of the workouts by using the filter field.
+    The filter field instantly filters out workouts that doesn't match your search term.
+    The fields only filters by workout title or date.
+- At the bottom of a specific workout, you can share the workout or delete it completely.
+    Sharing a workout opens a modal that checks if the shared user really exists. Only a single user can be shared.
+    Trying to share additional user with delete the previous shared user.
+    Deleting a workout will delete its' exercises as well.
+- Under the "Follow Your Friends" panel you can see all the workouts shared with you (Readonly)
+    Any change in the original workout will affect this window as well.
+    Shared workouts can also be filtered similarly to the previous filter field.
+- By pressing "Delete account" the user will be deleted with its' workouts and the cookie as well.
 - By pressing the logout button on the bottom, you'll return to the login page and be asked to enter your credentials again.
   Warning: Although not in the original design, The cookie will be deleted when logging out.
            To return to the login menu without deleting the cookie, refresh the page.
 
-What was hard?
-- Design-wise: managing to squeeze different HTML elements in the same line, or position them as expected.
-  CSS turned out to be quite tricky in that aspect.
-- Dynamically updating the "TODO" section was challenging, until we decided it's better to build the list
-  as the difference all the tasks minus the ones the user already transferred to the "DONE" section.
-- Building the table by always adding new rows and content took some time to understand.
-
-How did we test our app?
+How did I test my app?
 - By entering the app in chrome and manually trying out various flows the user might encounter
 - Using the "network" tab in developer tools to inspect requests and responses to the server
 - Using the "Postman" chrome extension to generate GET/POST requests which doesn't included in the basic UI.
   for example - the /item/ PUT request was only tested with Postman, since we couldn't find the right place in the UI.
-
-General notes
-- The exercise required us to extend the cookie in every API request beside login/register.
-  Instead of doing that in every single app.use function, we decided to push it to the general app.use('/')
-  That works a middleware for checking the existence of the cookie and extending it if necessary.
-- Not in the original design but, Login returns 200 for ok, 403 if the password doesn't match, and 500 otherwise.

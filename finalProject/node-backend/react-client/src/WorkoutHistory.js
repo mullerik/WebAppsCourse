@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ApiUtils from './ApiUtils'
-import { Button, Glyphicon, Panel, Badge, FormGroup, FormControl, ListGroup, ListGroupItem, InputGroup} from 'react-bootstrap';
+import { Button, Glyphicon, Panel, Badge, FormGroup, FormControl, ListGroup, ListGroupItem} from 'react-bootstrap';
 import ShareModal from "./ShareModal";
 import ExerciseModal from "./ExerciseModal";
 

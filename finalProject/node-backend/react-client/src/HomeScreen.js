@@ -85,10 +85,6 @@ class HomeScreen extends Component {
         let panelGroupStyle = {
             margin: '20px'
         };
-        let TitleStyle = {
-            fontSize: '42px'
-        };
-
         // Render only if logged in user exists
         if (this.props.user) {
             return (

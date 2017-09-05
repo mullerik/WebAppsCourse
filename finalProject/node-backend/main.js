@@ -58,6 +58,7 @@ userList.admin = {
 // should add user/password to the user-list
 app.post('/register/:username/:password', function(req, res, next){
     var username = req.params.username;
+    username = username.toLowerCase();
     var password = req.params.password;
     if (username in userList){
         console.log("main.js: register: User " + username + " already exists");
@@ -75,6 +76,7 @@ app.post('/register/:username/:password', function(req, res, next){
 // should log ins
 app.post('/login/:username/:password', function(req, res, next){
     var username = req.params.username;
+    username = username.toLowerCase();
     var password = req.params.password;
     if (username in userList){
         console.log("main.js: login: Logged in with user " + username);
@@ -271,5 +273,7 @@ app.use(function(err, req, res, next) {
 // Listen on a given port or 5000
 var port = process.env.PORT || 5000;
 app.listen(port);
+
+console.log(`FiTotal server listening on ${port}`);
 
 module.exports = app;
