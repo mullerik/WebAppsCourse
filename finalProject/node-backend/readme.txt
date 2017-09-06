@@ -1,4 +1,4 @@
-Readme - FiTotal App by Arie Muller
+Readme - FiTotal App by Arie Muller ID: 308258243
 
 URL: http://fitotal.herokuapp.com/
 
@@ -12,7 +12,7 @@ The goal behind the UI
 
 How to use the UI?
 ** Run "npm install" to get all necessary dependencies **
-- Start by running "npm start" inside node-backend directory
+- Start by running "npm start" inside node-backend directory and react-client dir.
 - In chrome, go to http://localhost:3000/ for local version and fitotal.herokuapp.com for online.
 - Enter username + password and register
   Trying to login with non-existing user should show red warning "User doesn't exist. Please register first."

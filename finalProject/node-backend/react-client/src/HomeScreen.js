@@ -34,14 +34,20 @@ class HomeScreen extends Component {
     }
 
     refreshWorkouts(){
-        fetch(`/getWorkouts/${this.props.user}`, {method: 'GET', credentials: 'include', cache: 'no-store'})
+        fetch(`/getWorkouts/${this.props.user}`, {method: 'GET',
+            credentials: 'include',
+            cache: "no-store",
+            headers: {'Cache-Control': 'no-cache'}})
             .then(ApiUtils.checkStatus)
             .then(response => response.json())
             .then(response => this.setState({workouts: response}))
             .catch(e => console.log(e));
     }
     refreshSharedWorkouts(){
-        fetch(`/getSharedWorkouts/${this.props.user}`, {method: 'GET', credentials: 'include', cache: 'no-store'})
+        fetch(`/getSharedWorkouts/${this.props.user}`, {method: 'GET',
+            credentials: 'include',
+            cache: "no-store",
+            headers: {'Cache-Control': 'no-cache'}})
             .then(ApiUtils.checkStatus)
             .then(response => response.json())
             .then(response => this.setState({sharedWorkouts: response}))
