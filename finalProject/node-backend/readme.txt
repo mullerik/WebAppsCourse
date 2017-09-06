@@ -18,12 +18,17 @@ How to use the UI?
   Trying to login with non-existing user should show red warning "User doesn't exist. Please register first."
   Trying to login with wrong password should show red warning "Bad credentials for admin. Please try again."
   Trying to register with a registered user should show red warning "User already exist."
+  *** The user names are managed only by lowercase even if entered differently.
 - After login, content page will be loaded with a short description.
 - You can add an empty workout by pressing the '+' button.
     Fill out all the necessary fields and press create.
     I've added fields validation to assure no empty fields are being sent to the server.
     The workout is associated with the logged user and owned by him. Only the creating user can add/remove exercises from the workout.
     The "Your workouts" Panel should be updated right after a successful creation.
+	*** Sometimes the panel isn't updated right away.
+	*** This is caused by the browsers' cache that returns 304 (not modified) instead of 200 for our new workout list
+	*** If that happens, refreshing the page should solve the issue.
+	*** Only happens ony Heroku, and not locally
 - After creating the workout, you may add exercises in the "Your workouts" Panel.
     Add an exercise by pressing the '+' under the workout panel.
     Choose your exercise and decide the sets/reps/weight.
@@ -45,9 +50,3 @@ How to use the UI?
 - By pressing the logout button on the bottom, you'll return to the login page and be asked to enter your credentials again.
   Warning: Although not in the original design, The cookie will be deleted when logging out.
            To return to the login menu without deleting the cookie, refresh the page.
-
-How did I test my app?
-- By entering the app in chrome and manually trying out various flows the user might encounter
-- Using the "network" tab in developer tools to inspect requests and responses to the server
-- Using the "Postman" chrome extension to generate GET/POST requests which doesn't included in the basic UI.
-  for example - the /item/ PUT request was only tested with Postman, since we couldn't find the right place in the UI.

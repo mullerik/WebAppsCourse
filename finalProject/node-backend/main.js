@@ -171,6 +171,8 @@ app.get('/getWorkouts/:user', function(req, res, next){
         res.sendStatus(404);
     else{
         var workoutForUser = workoutList.filter(workout => workout.user == user);
+        // Prevent caching and 304 responses
+        res.setHeader('Last-Modified', (new Date()).toUTCString());
         res.json(workoutForUser);
     }
 
@@ -182,6 +184,8 @@ app.get('/getSharedWorkouts/:user', function(req, res, next){
     if (!isUserExists(user))
         res.sendStatus(404);
     else
+        // Prevent caching and 304 responses
+        res.setHeader('Last-Modified', (new Date()).toUTCString());
         res.json(workoutList.filter(workout => workout.shared_with === user))
 
 });
@@ -205,15 +209,12 @@ app.post('/createWorkout/', function(req, res, next){
 // delete the item with the right id or 404 if no such an item
 app.delete('/deleteWorkout/:id', function(req, res, next){
     var workoutID = parseInt(req.params.id);
-    console.log("workoutID ", workoutID);
     var workout = workoutList.find(workout => workout.id == workoutID);
-    console.log("workout ", workout);
     if (workout) {
         index = workoutList.indexOf(workout);
         if (index > -1) {
             workoutList.splice(index, 1);
         }
-        console.log("workoutList ", workoutList);
         res.sendStatus(200);
     }
     else
@@ -243,7 +244,6 @@ app.post('/shareWorkout/', function(req, res, next){
         var workout = workoutList.find(workout => workout.id == workout_id);
         if (workout) {
             workout.shared_with = userToShare;
-            console.log("workoutList ", workoutList);
             res.sendStatus(200);
         }
         else
