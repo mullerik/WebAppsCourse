@@ -5,7 +5,7 @@ import CreateWorkoutModal from './CreateWorkoutModal'
 import WorkoutHistory from './WorkoutHistory'
 import SharedWorkoutHistory from './SharedWorkoutHistory'
 import SummaryPanel from './SummaryPanel'
-import { Button, PanelGroup, Panel, PageHeader, Label } from 'react-bootstrap';
+import { Button, PanelGroup, Panel, PageHeader, Label, Alert } from 'react-bootstrap';
 
 class HomeScreen extends Component {
     constructor(props) {
@@ -94,16 +94,16 @@ class HomeScreen extends Component {
                     </PageHeader>
                     <img src={logo} className="App-logo" alt="logo" /><br/>
                     <small className="Subtitle">Your personal training App</small><br/>
-                    <div>
-                        <h4>Welcome {this.props.user}</h4>
-                        <h5>Start your FiTotal experience by creating a new workout</h5>
-                        <CreateWorkoutModal user={this.props.user}
-                                            refreshWorkouts={this.refreshWorkouts.bind(this)}/>
-                    </div>
                     <PanelGroup activeKey={this.state.activeKey}
                                 onSelect={this.handleSelect}
                                 accordion
                                 style={panelGroupStyle}>
+                        <Alert bsStyle="info">
+                            <h4><strong>Ahoy! {this.props.user}</strong></h4>
+                        <h5>Start your FiTotal experience by creating a new workout</h5>
+                        <CreateWorkoutModal user={this.props.user}
+                                            refreshWorkouts={this.refreshWorkouts.bind(this)}/>
+                        </Alert>
                         <Panel header="Your Workouts" eventKey="1">
                             <WorkoutHistory user={this.props.user}
                                             workouts={this.state.workouts}
