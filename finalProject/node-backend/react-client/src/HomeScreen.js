@@ -34,14 +34,14 @@ class HomeScreen extends Component {
     }
 
     refreshWorkouts(){
-        fetch(`/getWorkouts/${this.props.user}`, {method: 'GET', credentials: 'include'})
+        fetch(`/getWorkouts/${this.props.user}`, {method: 'GET', credentials: 'include', cache: 'no-store'})
             .then(ApiUtils.checkStatus)
             .then(response => response.json())
             .then(response => this.setState({workouts: response}))
             .catch(e => console.log(e));
     }
     refreshSharedWorkouts(){
-        fetch(`/getSharedWorkouts/${this.props.user}`, {method: 'GET', credentials: 'include'})
+        fetch(`/getSharedWorkouts/${this.props.user}`, {method: 'GET', credentials: 'include', cache: 'no-store'})
             .then(ApiUtils.checkStatus)
             .then(response => response.json())
             .then(response => this.setState({sharedWorkouts: response}))
@@ -94,16 +94,16 @@ class HomeScreen extends Component {
                     </PageHeader>
                     <img src={logo} className="App-logo" alt="logo" /><br/>
                     <small className="Subtitle">Your personal training App</small><br/>
+                    <Alert bsStyle="info" style={panelGroupStyle}>
+                        <h4><strong>Ahoy! {this.props.user}</strong></h4>
+                        <h5>Start your FiTotal experience by creating a new workout</h5>
+                        <CreateWorkoutModal user={this.props.user}
+                                            refreshWorkouts={this.refreshWorkouts.bind(this)}/>
+                    </Alert>
                     <PanelGroup activeKey={this.state.activeKey}
                                 onSelect={this.handleSelect}
                                 accordion
                                 style={panelGroupStyle}>
-                        <Alert bsStyle="info">
-                            <h4><strong>Ahoy! {this.props.user}</strong></h4>
-                        <h5>Start your FiTotal experience by creating a new workout</h5>
-                        <CreateWorkoutModal user={this.props.user}
-                                            refreshWorkouts={this.refreshWorkouts.bind(this)}/>
-                        </Alert>
                         <Panel header="Your Workouts" eventKey="1">
                             <WorkoutHistory user={this.props.user}
                                             workouts={this.state.workouts}

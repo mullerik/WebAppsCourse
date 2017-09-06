@@ -11,6 +11,7 @@ The goal behind the UI
   The logout button enables the user to remove the cookie and go back to the login page.
 
 How to use the UI?
+** Run "npm install" to get all necessary dependencies **
 - Start by running "npm start" inside node-backend directory
 - In chrome, go to http://localhost:3000/ for local version and fitotal.herokuapp.com for online.
 - Enter username + password and register
@@ -39,6 +40,7 @@ How to use the UI?
 - Under the "Follow Your Friends" panel you can see all the workouts shared with you (Readonly)
     Any change in the original workout will affect this window as well.
     Shared workouts can also be filtered similarly to the previous filter field.
+- In Summary panel you can see all the progress you made over time
 - By pressing "Delete account" the user will be deleted with its' workouts and the cookie as well.
 - By pressing the logout button on the bottom, you'll return to the login page and be asked to enter your credentials again.
   Warning: Although not in the original design, The cookie will be deleted when logging out.
