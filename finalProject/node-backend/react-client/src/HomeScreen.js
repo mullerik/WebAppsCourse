@@ -4,6 +4,7 @@ import ApiUtils from './ApiUtils'
 import CreateWorkoutModal from './CreateWorkoutModal'
 import WorkoutHistory from './WorkoutHistory'
 import SharedWorkoutHistory from './SharedWorkoutHistory'
+import SummaryPanel from './SummaryPanel'
 import { Button, PanelGroup, Panel, PageHeader, Label } from 'react-bootstrap';
 
 class HomeScreen extends Component {
@@ -113,6 +114,10 @@ class HomeScreen extends Component {
                         <Panel header="Follow Your Friends" eventKey="2">
                             <SharedWorkoutHistory user={this.props.user}
                                                   workouts={this.state.sharedWorkouts}/>
+                        </Panel>
+                        <Panel header="Summary" eventKey="3">
+                            <SummaryPanel user={this.props.user}
+                                          workouts={this.state.workouts}/>
                         </Panel>
                     </PanelGroup>
                     <Button bsStyle="link" onClick={this.logout.bind(this)}>Logout</Button><br/>
