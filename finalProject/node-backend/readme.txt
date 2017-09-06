@@ -20,6 +20,7 @@ How to use the UI?
   Trying to register with a registered user should show red warning "User already exist."
   *** The user names are managed only by lowercase even if entered differently.
 - After login, content page will be loaded with a short description.
+
 - You can add an empty workout by pressing the '+' button.
     Fill out all the necessary fields and press create.
     I've added fields validation to assure no empty fields are being sent to the server.
@@ -28,16 +29,19 @@ How to use the UI?
 	*** Sometimes the panel isn't updated right away.
 	*** This is caused by the browsers' cache that returns 304 (not modified) instead of 200 for our new workout list
 	*** If that happens, refreshing the page should solve the issue.
-	*** Only happens ony Heroku, and not locally
+	*** I hoped that by using res.setHeader('Last-Modified', (new Date()).toUTCString()); the problem is solved.
+
 - After creating the workout, you may add exercises in the "Your workouts" Panel.
     Add an exercise by pressing the '+' under the workout panel.
     Choose your exercise and decide the sets/reps/weight.
     Click "Add" to finish.
     You can remove the exercise later on by pressing "X" near the exercise.
     The workout should be updated instantly.
+
 - You can show only some of the workouts by using the filter field.
     The filter field instantly filters out workouts that doesn't match your search term.
     The fields only filters by workout title or date.
+
 - At the bottom of a specific workout, you can share the workout or delete it completely.
     Sharing a workout opens a modal that checks if the shared user really exists. Only a single user can be shared.
     Trying to share additional user with delete the previous shared user.
@@ -45,7 +49,11 @@ How to use the UI?
 - Under the "Follow Your Friends" panel you can see all the workouts shared with you (Readonly)
     Any change in the original workout will affect this window as well.
     Shared workouts can also be filtered similarly to the previous filter field.
-- In Summary panel you can see all the progress you made over time
+
+- In Summary panel you can see all the progress you made over time. 
+	The aggregations are made according to the date of the workout
+
+
 - By pressing "Delete account" the user will be deleted with its' workouts and the cookie as well.
 - By pressing the logout button on the bottom, you'll return to the login page and be asked to enter your credentials again.
   Warning: Although not in the original design, The cookie will be deleted when logging out.
