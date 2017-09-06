@@ -26,7 +26,7 @@ class App extends Component {
                                  setUser={this.setUser.bind(this)}
                                  change={this.changeScreen.bind(this)}/>
                     <HomeScreen show={this.state.show}
-                                user={this.state.loggedUser}
+                                user={this.state.loggedUser.toLowerCase()}
                                 setUser={this.setUser.bind(this)}
                                 change={this.changeScreen.bind(this)}/>
                 </div>

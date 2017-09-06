@@ -18,38 +18,55 @@ class LoginScreen extends Component {
         return respone
     }
 
-    login(){
-        fetch(`/login/${this.state.username}/${this.state.password}`, {method: 'POST', credentials: 'include'})
-            .then(this.clearMsgs.bind(this))
-            .then(ApiUtils.checkStatus)
-            .then(response => {
-                this.props.setUser(this.state.username);
-                this.props.change('HomeScreen');
-            })
-            .catch(e => {
-                switch(e.response.status) {
-                    case 403:
-                        this.setState({errorMsg: `Bad credentials for ${this.state.username}. Please try again.`});
-                        break;
-                    case 500:
-                        this.setState({errorMsg: `User ${this.state.username} doesn't exist. Please register first.`});
-                        break;
-                    default:
-                        this.setState({errorMsg: `Unknown error occurred.`});
+    validateFields() {
+        if (this.state.username && this.state.password)
+            return true;
 
-                }
-            })
+        return false
+    }
+
+    login(){
+        if (!this.validateFields())
+            this.setState({errorMsg: 'Please Fill out all the fields'});
+        else {
+            this.clearMsgs(null);
+            fetch(`/login/${this.state.username.toLowerCase()}/${this.state.password}`, {method: 'POST', credentials: 'include'})
+                .then(this.clearMsgs.bind(this))
+                .then(ApiUtils.checkStatus)
+                .then(response => {
+                    this.props.setUser(this.state.username.toLowerCase());
+                    this.props.change('HomeScreen');
+                })
+                .catch(e => {
+                    switch(e.response.status) {
+                        case 403:
+                            this.setState({errorMsg: `Bad credentials for ${this.state.username}. Please try again.`});
+                            break;
+                        case 500:
+                            this.setState({errorMsg: `User ${this.state.username} doesn't exist. Please register first.`});
+                            break;
+                        default:
+                            this.setState({errorMsg: `Unknown error occurred.`});
+
+                    }
+                })
+        }
 
     }
     register(){
-        fetch(`/register/${this.state.username}/${this.state.password}`, {method: 'POST'})
-            .then(this.clearMsgs.bind(this))
-            .then(ApiUtils.checkStatus)
-            .then(response => this.setState({msg: `Created user ${this.state.username} successfully.`}))
-            .catch(e => {
-                if (e.response.status === 500)
-                    this.setState({errorMsg: `User ${this.state.username} already exists`});
-            })
+        if (!this.validateFields())
+            this.setState({errorMsg: 'Please Fill out all the fields'});
+        else{
+            this.clearMsgs(null);
+            fetch(`/register/${this.state.username.toUpperCase()}/${this.state.password}`, {method: 'POST'})
+                .then(this.clearMsgs.bind(this))
+                .then(ApiUtils.checkStatus)
+                .then(response => this.setState({msg: `Created user ${this.state.username} successfully.`}))
+                .catch(e => {
+                    if (e.response.status === 500)
+                        this.setState({errorMsg: `User ${this.state.username} already exists`});
+                })
+        }
     }
     userChange(event){
         this.setState({username: event.target.value});
@@ -76,7 +93,7 @@ class LoginScreen extends Component {
             <div style={LoginStyle}>
                 <div style={credentialsStyle}>
                     <img src={logo} className="App-logo" alt="logo" /><br/>
-                    <span>Please provide your credentials</span>
+                    <span>Enter username and password</span>
                     <FormGroup style={formStyle}>
                         <FormControl type="text"
                                      placeholder="User"

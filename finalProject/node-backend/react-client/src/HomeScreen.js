@@ -128,7 +128,7 @@ class HomeScreen extends Component {
                     </PanelGroup>
                     <Button bsStyle="link" onClick={this.logout.bind(this)}>Logout</Button><br/>
                     <Button bsStyle="link" onClick={this.delete.bind(this)}>Delete Account</Button><br/>
-                    <Label>Caution: This cannot be undone!</Label>
+                    <Label bsStyle="warning">Caution: This cannot be undone!</Label>
                 </div>
             );
         }
